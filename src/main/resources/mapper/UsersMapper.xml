@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.videoweb.videoweb.dao.UsersDao">
+    <!-- 查询是否存在指定的邮箱地址 -->
+    <select id="checkEmailExist" parameterType="com.videoweb.videoweb.model.Users" resultType="java.lang.Integer">
+        select count(*) from users where email = #{email}
+    </select>
+    <!-- 向 users 表中插入一条新的记录 -->
+    <insert id="registerUser" parameterType="com.videoweb.videoweb.model.Users">
+        insert into users(email, password, up_name, head_address, brief)
+        values (#{email}, #{password}, #{upName}, #{headAddress}, #{brief})
+    </insert>
+    <!-- 查询是否存在这个账号密码的用户 -->
+    <select id="checkUserExist" resultType="com.videoweb.videoweb.model.Users">
+        select email,user_id  from users where email = #{email} and password = #{password}
+    </select>
+
+    <!-- 根据用户Id查询用户信息 -->
+    <select id="getUserByLogin" parameterType="com.videoweb.videoweb.model.Users" resultType="com.videoweb.videoweb.reponsedata.UsRes">
+        select user_id as userId, email, up_name as upName, head_address as headAddress, brief
+        from users
+        where user_id=#{userId}
+    </select>
+
+    <!-- 根据 用户id 更新用户信息 -->
+    <update id="updateUserByToken" parameterType="com.videoweb.videoweb.model.Users" >
+        update users
+        set up_name = #{upName},
+            head_address = #{headAddress},
+            brief = #{brief}
+        where user_id=#{userId}
+    </update>
+
+</mapper>

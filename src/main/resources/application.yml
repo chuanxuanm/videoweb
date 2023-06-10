@@ -1,0 +1,46 @@
+server:
+  port: 8081
+
+
+
+spring:
+  datasource:
+    #你的数据库连接
+    url: jdbc:mysql://localhost:3306/data?serverTimezone=GMT%2B8&characterEncoding=utf-8&useSSL=false&allowMultiQueries=true
+    username: #用户名
+    password: #数据库密码
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    #阿里云的bucket控制权信息
+  oss:
+    endpoint:
+    access-key-id:
+    access-key-secret:
+    bucket-name:
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
+  #redis运行地址和端口
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password:
+#kafka自动化的配置
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      group-id: my-group-id
+#websocket路径配置
+  websocket:
+      path: /ws/*
+
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true

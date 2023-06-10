@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.videoweb.videoweb.dao.InfoDao">
+    <!-- 根据 用户id 获取用户粉丝 -->
+    <select id="getFans" parameterType="com.videoweb.videoweb.model.Users" resultType="java.lang.Integer">
+        select count(id) from fans where followed_id=#{userId}
+    </select>
+    <!-- 根据 用户id 获取用户动态数 -->
+    <select id="getDynamic" parameterType="com.videoweb.videoweb.model.Users" resultType="java.lang.Integer">
+        select count(id) from dynamic where user_id=#{userId}
+    </select>
+    <!-- 根据 用户id 获取用户点赞数 -->
+    <select id="getThumb" parameterType="com.videoweb.videoweb.model.Users" resultType="java.lang.Integer">
+        select count(id) from thumb where user_id=#{userId}
+    </select>
+    <!-- 根据 用户id，偏移值 获取用户粉丝列表 -->
+    <select id="getFansList" parameterType="com.videoweb.videoweb.model.Users" resultType="com.videoweb.videoweb.model.Users">
+        select users.user_id,users.up_name,users.head_address from fans inner join users on users.user_id=fans.follower_id where fans.followed_id=#{userId} LIMIT #{limit} offset #{offset}
+    </select>
+    <!-- 根据 用户id，偏移值 获取用户动态列表 -->
+    <select id="getDynamicList" parameterType="com.videoweb.videoweb.model.Users" resultType="com.videoweb.videoweb.model.Dynamic">
+        select dynamic.dynamic_data,dynamic.dynamic_time from dynamic inner join users on users.user_id=dynamic.user_id where dynamic.user_id=#{userId} LIMIT #{limit} offset #{offset}
+    </select>
+    <!-- 根据 用户点赞表用户id，偏移值 获取用户点赞视频列表 -->
+    <select id="getThumbList" parameterType="com.videoweb.videoweb.model.Users" resultType="com.videoweb.videoweb.model.Videodata">
+        select videodata.* from videodata inner join thumb on videodata.video_id=thumb.video_id where thumb=#{user_id} LIMIT #{limit} offset #{offset}
+    </select>
+
+    <!--  获取用户首页视频列表 -->
+    <select id="getVideoList" parameterType="com.videoweb.videoweb.model.Users" resultType="com.videoweb.videoweb.model.Videodata">
+        select videodata.*,users.user_id,users.up_name,users.head_address from videodata inner join users on videodata.user_id=users.user_id LIMIT #{limit} offset #{offset}
+    </select>
+    <!--  获取最热的首页视频列表 -->
+    <select id="getHotVideoList" parameterType="com.videoweb.videoweb.model.Users" resultType="com.videoweb.videoweb.model.Videodata">
+        SELECT videodata.*, users.user_id, users.up_name, users.head_address
+        FROM videodata
+                 INNER JOIN users
+                            ON videodata.user_id = users.user_id
+        WHERE DATE(comment_time) = CURDATE()
+        ORDER BY videodata.plays DESC
+            LIMIT #{limit} OFFSET #{offset}
+    </select>
+    <!--  根据标签，获取用户首页筛选视频列表 -->
+    <select id="getTagVideoList" parameterType="com.videoweb.videoweb.model.Videodata" resultType="com.videoweb.videoweb.model.Videodata">
+        select  videodata.*,users.user_id,users.up_name,users.head_address  from videodata inner join users on videodata.user_id=users.user_id  where  video_tab=#{ videoTab} LIMIT #{limit} offset #{offset}
+    </select>
+    <!--  根据标签，获取用户推荐筛选视频列表，-->
+    <select id="getRecomVideoList" parameterType="com.videoweb.videoweb.model.Videodata" resultType="com.videoweb.videoweb.model.Videodata">
+        select videodata.*,users.user_id,users.up_name,users.head_address from videodata inner join users on videodata.user_id=users.user_id where  video_tab=#{ videoTab}   limit #{limit} offset 0
+    </select>
+    <!-- 模糊查询 -->
+    <select id="getSearchVideoList" parameterType="com.videoweb.videoweb.model.Videodata" resultType="com.videoweb.videoweb.model.Videodata">
+        select videodata.*,users.user_id,users.up_name,users.head_address from videodata inner join users on videodata.user_id=users.user_id where video_title like CONCAT('%', #{videoTitle}, '%')  LIMIT #{limit} offset #{offset}
+    </select>
+
+    <!-- 根据视频id 查询视频评论信息 -->
+    <select id="selectComment" parameterType="com.videoweb.videoweb.model.Videodata" resultType="com.videoweb.videoweb.model.Videocomment">
+        SELECT * FROM videocomment WHERE  video_id = #{videoId}  LIMIT #{limit} offset #{offset}
+    </select>
+
+
+
+</mapper>

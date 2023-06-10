@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <!DOCTYPE mapper
+                PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.videoweb.videoweb.dao.ChangeInfo">
+        <select id="getUserInfoById" parameterType="com.videoweb.videoweb.model.Users" resultType="com.videoweb.videoweb.model.Users">
+                SELECT user_id, email, up_name, head_address, brief
+                FROM users WHERE user_id = #{userId} ;
+        </select>
+        <!-- 更新用户信息 -->
+        <update id="updateUserInfo" parameterType="com.videoweb.videoweb.model.UsersFile">
+                UPDATE users
+                SET head_address = #{headAddress}, brief = #{brief}, up_name = #{upName}
+                WHERE user_id = #{userId}
+        </update>
+        <insert id="insertDynamic" parameterType="com.videoweb.videoweb.model.Dynamic">
+                INSERT INTO dynamic (user_id, dynamic_data, dynamic_time)
+                VALUES (#{userId}, #{dynamicData}, NOW())
+        </insert>
+        <delete id="deleteDynamic" parameterType="com.videoweb.videoweb.model.Dynamic">
+                DELETE FROM dynamic
+                WHERE user_id = #{userId} AND id = #{id}
+        </delete>
+        <insert id="insertVideodata" parameterType="com.videoweb.videoweb.model.GetFile">
+                INSERT INTO videodata (user_id, video_address, video_image, video_title, video_brief, comment_time, video_tab, audit,plays)
+                VALUES (#{userId}, #{videoAddress}, #{videoImage}, #{videoTitle}, #{videoBrief}, NOW(), #{videoTab}, #{audit},#{plays})
+        </insert>
+        <insert id="insertComment">
+                INSERT INTO videocomment (user_id, video_id, comment_data, comment_time)
+                VALUES (#{userId}, #{videoId}, #{commentData}, Now())
+        </insert>
+        <insert id="insertThumb" parameterType="com.videoweb.videoweb.model.Thumb">
+                INSERT INTO thumb (user_id, video_id)
+                VALUES (#{userId}, #{videoId})
+        </insert>
+        <select id="checkThumb" parameterType="com.videoweb.videoweb.model.Thumb" resultType="java.lang.Integer">
+                select count(id) from thumb where user_id=#{userId} and video_id=#{videoId}
+        </select>
+        <update id="updatePlays" parameterType="com.videoweb.videoweb.model.Videodata">
+                update videodata
+               set plays=plays+1 where video_id=#{videoId}
+        </update>
+</mapper>
